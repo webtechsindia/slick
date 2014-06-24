@@ -112,9 +112,12 @@ function getcolumn(){
 }
 
 function filter(item) {
-   for (var columnId in columnFilters) {
+
+
+ for (var columnId in columnFilters) {
       if (columnId !== undefined && columnFilters[columnId] !== "") {
         var c = grid.getColumns()[grid.getColumnIndex(columnId)];
+                                                                                                                                                                                                       
         if (item[c.field].indexOf(columnFilters[columnId]) == -1) {
           return false;
         }
@@ -164,10 +167,11 @@ if(typeof(Worker) !== "undefined") {
       var here = element.data;
        if(here['viewentry']!=="undefined"){
               if(typeof queued[loopcount]!=='undefined'){
-                  console.log(queued[loopcount]);
                   getNewrows(queued[loopcount][0],queued[loopcount][1]);
                   loopcount++;
                   arrageData(here['viewentry']);
+                  
+                 }else{
                   grid.init();
                   dataView.beginUpdate();
                   dataView.setItems(data);
@@ -233,8 +237,7 @@ function arrageData(unfromated){
                   }
               else{
                     alert('new format found!!! check console');
-                
-                   return false;
+                    return false;
                  }
               
              });
@@ -253,7 +256,8 @@ $(function () {
     var toplevelentries = newdata['@toplevelentries'];
     var percount        = newdata['viewentry'].length;
     totalrequest = Math.ceil(toplevelentries/percount); 
-    totalrequest = 4 
+        
+
     arrageData(newdata['viewentry']);
 
     dataView = new Slick.Data.DataView();
@@ -283,13 +287,13 @@ $(function () {
         grid.render();
       });
     dataView.onRowsChanged.subscribe(function (e, args) {
-        console.log(args.rows);
+       
         grid.invalidateRows(args.rows);
         grid.render();
       });
-
+  
     //===========get other set of data's===================
-    for(k=1;k<totalrequest;k++){ 
+     for(k=1;k<totalrequest;k++){ 
        if(k==1)
        var apirequest = getNewrows((k * percount) + 1, percount);
         else{
@@ -304,7 +308,7 @@ $(function () {
       dataView.setItems(data);
       dataView.setFilter(filter);
       dataView.endUpdate();
-      
+
     })
   })
 

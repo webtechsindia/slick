@@ -112,8 +112,6 @@ function getcolumn(){
 }
 
 function filter(item) {
-
-
  for (var columnId in columnFilters) {
       if (columnId !== undefined && columnFilters[columnId] !== "") {
         var c = grid.getColumns()[grid.getColumnIndex(columnId)];

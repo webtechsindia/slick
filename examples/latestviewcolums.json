@@ -1,0 +1,340 @@
+{
+"@direction": "0",
+"@spacing": "0",
+"@columns": "10",
+"@totalscolor": "#ff0000",
+"@extendlastcolumn": "false",
+"column": [
+{
+"@columnnumber": "0",
+"@width": "40",
+"@name": "SiteID",
+"@title": "SiteID",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000000",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "1",
+"@width": "38",
+"@name": "SiteVisitCity",
+"@title": "Ort",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "2",
+"@width": "64",
+"@name": "$40",
+"@title": "Gata",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "3",
+"@width": "35",
+"@name": "$39",
+"@title": "Order nr",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000000",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "b",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "4",
+"@width": "42",
+"@name": "Entreprenor",
+"@title": "Entreprenör",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "5",
+"@width": "42",
+"@name": "$46",
+"@title": "Datum",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never",
+"@year4digit": "true"
+}
+},
+{
+"@columnnumber": "6",
+"@width": "80",
+"@name": "$55",
+"@title": "Utrustningsnivåer",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "7",
+"@width": "42",
+"@name": "$50",
+"@title": "Arbetsbeskrivning",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "8",
+"@width": "42",
+"@name": "$51",
+"@title": "Registrerad av",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+},
+{
+"@columnnumber": "9",
+"@width": "42",
+"@name": "SitePlatform",
+"@title": "Driftform",
+"@resize": "true",
+"@format": "2",
+"@listseparator": "none",
+"@narrowdisplay": "top",
+"@tiledisplay": "top",
+"cfont": {
+"@style": "r",
+"@size": "10",
+"@color": "#000080",
+"@face": "Helvetica"
+},
+"hfont": {
+"@style": "r",
+"@size": "9",
+"@color": "#808080",
+"@face": "Helvetica"
+},
+"numberformat": {
+"@digits": "0",
+"@format": "general"
+},
+"datetimeformat": {
+"@show": "datetime",
+"@date": "yearmonthday",
+"@time": "hourminutesecond",
+"@zone": "never"
+}
+}
+]
+}

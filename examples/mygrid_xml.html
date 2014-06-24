@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>SlickGrid example 4: Model</title>
+  <link rel="stylesheet" href="../slick.grid.css" type="text/css"/>
+  <link rel="stylesheet" href="../controls/slick.pager.css" type="text/css"/>
+  <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
+  <link rel="stylesheet" href="examples.css" type="text/css"/>
+  <link rel="stylesheet" href="../controls/slick.columnpicker.css" type="text/css"/>
+  <style>
+    .cell-title {
+      font-weight: bold;
+    }
+
+    .cell-effort-driven {
+      text-align: center;
+    }
+
+    .cell-selection {
+      border-right-color: silver;
+      border-right-style: solid;
+      background: #f5f5f5;
+      color: gray;
+      text-align: right;
+      font-size: 10px;
+    }
+
+    .slick-row.selected .cell-selection {
+      background-color: transparent; /* show default selected row background */
+    }
+  </style>
+</head>
+
+<body>
+
+	<div style="position:relative">
+  <div style="width:100%;">
+    <div class="grid-header" style="width:100%">
+      <label>SlickGrid</label>
+      <span style="float:right" class="ui-icon ui-icon-search" title="Toggle search panel"
+            onclick="toggleFilterRow()"></span>
+    </div>
+    <div id="myGrid" style="width:100%;height:500px;"></div>
+    <div id="pager" style="width:100%;height:20px;"></div>
+  </div>
+
+  
+</div>
+
+<div id="inlineFilterPanel" style="display:none;background:#dddddd;padding:3px;color:black;">
+  Show tasks with title including <input type="text" id="txtSearch2">
+  and % at least &nbsp;
+  <div style="width:100px;display:inline-block;" id="pcSlider2"></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src="../lib/firebugx.js"></script>
+
+<script src="../lib/jquery-1.7.min.js"></script>
+<script src="../lib/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="../lib/jquery.event.drag-2.2.js"></script>
+<script src="../slick.core.js"></script>
+<script src="../slick.formatters.js"></script>
+<script src="../slick.editors.js"></script>
+<script src="../plugins/slick.rowselectionmodel.js"></script>
+<script src="../slick.grid.js"></script>
+<script src="../slick.dataview.js"></script>
+<script src="../controls/slick.pager.js"></script>
+<script src="../controls/slick.columnpicker.js"></script>
+
+<script>
+
+function gettabledata(){
+ 
+  var data =  $.getJSON( "./formatted.json", function( newdata ) {
+      //console.log(newdata['viewentries']['viewentry']);
+        var i=0;
+        newdata['viewentries']['viewentry'].forEach( function(entry){ 
+             data[i] = entry;
+            i++;
+          });
+      });
+  return data;
+}
+
+var dataView;
+var grid;
+var data = [];
+function requiredFieldValidator(value) {
+  if (value == null || value == undefined || !value.length) {
+    return {valid: false, msg: "This is a required field"};
+  }
+  else {
+    return {valid: true, msg: null};
+  }
+}
+
+function myFilter(item, args) {
+  if (item["percentComplete"] < args.percentCompleteThreshold) {
+    return false;
+  }
+
+  if (args.searchString != "" && item["title"].indexOf(args.searchString) == -1) {
+    return false;
+  }
+
+  return true;
+}
+
+function percentCompleteSort(a, b) {
+  return a["percentComplete"] - b["percentComplete"];
+}
+
+function comparer(a, b) {
+  var x = a[sortcol], y = b[sortcol];
+  return (x == y ? 0 : (x > y ? 1 : -1));
+}
+
+
+function toggleFilterRow() {
+  grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
+}
+
+function getcolumn(){
+
+  return $.ajax({
+  type: "GET",
+  url: "./column.json"
+    });
+}
+
+function getgriddata(){
+
+
+     for (var i = 0; i < 2; i++) {
+    var d = (data[i] = {});
+      d["id"] = "id_" + i;
+      d["num"] = i;
+      d["title"] = "Task " + i;
+      d["duration"] = "5 days";
+      d["percentComplete"] = Math.round(Math.random() * 100);
+      d["start"] = "01/01/2009";
+      d["finish"] = "01/05/2009";
+      d["effortDriven"] = (i % 5 == 0);
+  }
+  console.log(data);
+  return data;
+}
+
+function ordercolumns(colums){
+  var items = [];
+   var cols = colums['column'];
+    columns = [];
+  //  cols.forEach( function(col){    
+         //  columns.push(
+         //                {
+         //                    id: col['@columnnumber'], 
+         //                    name:col['@title'], 
+         //                    field: "num",
+         //                     cssClass: "cell-selection", 
+         //                     width: 100,
+         //                     cannotTriggerInsert: true, 
+         //                     resizable: false,
+         //                      selectable: false 
+         //                  }
+
+         //    );
+         // });
+
+ var columns = [
+          {id: "sel", name: "#", field: "num", behavior: "select", cssClass: "cell-selection", width: 40, cannotTriggerInsert: true, resizable: false, selectable: false },
+          {id: "title", name: "Title", field: "title", width: 120, minWidth: 120, cssClass: "cell-title", editor: Slick.Editors.Text, validator: requiredFieldValidator, sortable: true},
+        {id: "duration", name: "Duration", field: "duration", editor: Slick.Editors.Text, sortable: true},
+          {id: "%", defaultSortAsc: false, name: "% Complete", field: "percentComplete", width: 80, resizable: false, formatter: Slick.Formatters.PercentCompleteBar, editor: Slick.Editors.PercentComplete, sortable: true},
+          {id: "start", name: "Start", field: "start", minWidth: 60, editor: Slick.Editors.Date, sortable: true},
+          {id: "finish", name: "Finish", field: "finish", minWidth: 60, editor: Slick.Editors.Date, sortable: true},
+          {id: "effort-driven", name: "Effort Driven", width: 80, minWidth: 20, maxWidth: 80, cssClass: "cell-effort-driven", field: "effortDriven", formatter: Slick.Formatters.Checkmark, editor: Slick.Editors.Checkbox, cannotTriggerInsert: true, sortable: true}
+        ];
+
+  return columns;
+}
+
+
+
+$(function () {
+
+columnajax = getcolumn();
+columnajax.done(function (allcolumns) {
+
+  columns = ordercolumns(allcolumns);
+  console.log(columns);
+
+   var options = {
+      editable: true,
+      enableAddRow: true,
+      enableCellNavigation: true,
+      asyncEditorLoading: true,
+      forceFitColumns: false,
+      topPanelHeight: 25
+    };
+
+    var sortcol = "title";
+    var sortdir = 1;
+    var percentCompleteThreshold = 0;
+    var searchString = "";
+    data = getgriddata();
+    
+
+  
+      dataView = new Slick.Data.DataView({ inlineFilters: true });
+      grid = new Slick.Grid("#myGrid", dataView, columns, options);
+      grid.setSelectionModel(new Slick.RowSelectionModel());
+
+      var pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
+      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
+
+
+      // initialize the model after all the events have been hooked up
+      dataView.beginUpdate();
+      dataView.setItems(data);
+      dataView.setFilterArgs({
+        percentCompleteThreshold: percentCompleteThreshold,
+        searchString: searchString
+      });
+      dataView.setFilter(myFilter);
+      dataView.endUpdate();
+
+      // if you don't want the items that are not visible (due to being filtered out
+      // or being on a different page) to stay selected, pass 'false' to the second arg
+      dataView.syncGridSelection(grid, true);
+
+      $("#gridContainer").resizable();
+
+
+
+});
+
+
+})
+</script>
+</body>
+</html>

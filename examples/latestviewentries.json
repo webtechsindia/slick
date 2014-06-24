@@ -1,0 +1,85 @@
+	{
+	"@timestamp": "20140618T130511,00Z",
+	"@toplevelentries": "5040",
+	"viewentry": [
+	{
+		"@position": "1",
+		"@unid": "6A8E6FF654859A86C1257C1C00335DA4",
+		"@noteid": "9EE",
+		"@siblings": "5040",
+		"entrydata": [
+						{
+							"@columnnumber": "0",
+							"@name": "SiteID",
+							"text": {
+							"0": "300"
+									}
+						},
+						{
+						"@columnnumber": "1",
+						"@name": "SiteVisitCity",
+						"text": {
+						"0": "Upplands Väsby"
+							}			
+						},
+						{
+						"@columnnumber": "2",
+						"@name": "$40",
+						"text": {
+						"0": "Stora Wäsby E4 Norrgående"
+						}
+						},
+						{
+						"@columnnumber": "3",
+						"@name": "$39",
+						"text": {
+						"0": "<span id=\"1310003\" class=\"link\" onclick=\"javascript: openArbetsorder('/kund/Bridge/Workorder.nsf/woFilterAllCopy/6A8E6FF654859A86C1257C1C00335DA4?OpenDocument');\" \u003E#1310003</span\u003E"
+						}
+					},
+					{
+					"@columnnumber": "4",
+					"@name": "Entreprenor",
+					"text": {
+					"0": ""
+					}
+				},
+	{
+	"@columnnumber": "5",
+	"@name": "$46",
+	"datetime": {
+	"0": "20131107T102103,00+01"
+	}
+	},
+	{
+	"@columnnumber": "6",
+	"@name": "$55",
+	"text": {
+	"0": "1. Butiksutrustning2.FastFood3. FastFood"
+	}
+	},
+	{
+	"@columnnumber": "7",
+	"@name": "$50",
+	"text": {
+	"0": "Kortslutning."
+	}
+	},
+	{
+	"@columnnumber": "8",
+	"@name": "$51",
+	"text": {
+	"0": "Andreas Andersson"
+	}
+	},
+	{
+	"@columnnumber": "9",
+	"@name": "SitePlatform",
+	"text": {
+	"0": ""
+		}
+	}
+
+	]
+	}]
+}
+

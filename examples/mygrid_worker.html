@@ -93,10 +93,6 @@ var loopcount = 0;
 var primeWorker = new Worker('worker.js');
 var columnFilters = {};
 
-
-
-
-
 function percentCompleteSort(a, b) {
   return a["percentComplete"] - b["percentComplete"];
 }
@@ -105,7 +101,6 @@ function comparer(a, b) {
   var x = a[sortcol], y = b[sortcol];
   return (x == y ? 0 : (x > y ? 1 : -1));
 }
-
 
 function getcolumn(){
   return $.ajax({
@@ -116,8 +111,7 @@ function getcolumn(){
     });
 }
 
-
- function filter(item) {
+function filter(item) {
    for (var columnId in columnFilters) {
       if (columnId !== undefined && columnFilters[columnId] !== "") {
         var c = grid.getColumns()[grid.getColumnIndex(columnId)];
@@ -150,9 +144,7 @@ function ordercolumns(unsortedcolumn){
     return columns;
 }
 
-
 function formatDate(date){
-  //console.log(date);
   datearray   = date.split(',');
   dateandtime = datearray[0].split('T');
   year        = dateandtime[0].substring(0, 4);
@@ -167,27 +159,24 @@ function formatDate(date){
 
 function getNewrows(startfrom, count){
 if(typeof(Worker) !== "undefined") {
-  
-  
    primeWorker.postMessage([startfrom,count]);
    primeWorker.onmessage = function(element) {
       var here = element.data;
        if(here['viewentry']!=="undefined"){
-              if(typeof queued[loopcount]!='undefined'){
+              if(typeof queued[loopcount]!=='undefined'){
+                  console.log(queued[loopcount]);
                   getNewrows(queued[loopcount][0],queued[loopcount][1]);
                   loopcount++;
                   arrageData(here['viewentry']);
-                  grid.setData(data);
-                  grid.render();
+                  grid.init();
+                  dataView.beginUpdate();
+                  dataView.setItems(data);
+                  dataView.setFilter(filter);
+                  dataView.endUpdate();
                  }
-                   grid.init();
-                    dataView.beginUpdate();
-                    dataView.setItems(data);
-                    dataView.setFilter(filter);
-                    dataView.endUpdate();
               }
     };
-} else {
+}else {
     ajax++;
     $.ajax({
       type: "GET",
@@ -202,10 +191,7 @@ if(typeof(Worker) !== "undefined") {
                 arrageData(newdata['viewentry']);
                 grid.setData(data);
                 grid.render();
-                 
-
-                
-              }
+                }
             }
     });
   }
@@ -299,7 +285,6 @@ $(function () {
     dataView.onRowsChanged.subscribe(function (e, args) {
         console.log(args.rows);
         grid.invalidateRows(args.rows);
-                //   added
         grid.render();
       });
 
@@ -313,8 +298,13 @@ $(function () {
         }
       }
    //    ============================== 
-   
-
+       
+      grid.init();
+      dataView.beginUpdate();
+      dataView.setItems(data);
+      dataView.setFilter(filter);
+      dataView.endUpdate();
+      
     })
   })
 

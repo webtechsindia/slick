@@ -263,3 +263,8 @@ input.editor-checkbox {
       background-color: transparent; /* show default selected row background */
     }
   .slick-header-column { text-align : center !important; }
+
+.link{
+  cursor: pointer;
+  display: block;
+}

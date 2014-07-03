@@ -58,7 +58,7 @@ for (var columnId in columnFilters) {
     }
     return true;
   }
-  
+
 function printexcel() {
 
   selectedIndexes = grid.getSelectedRows();
@@ -71,7 +71,7 @@ function printexcel() {
       for(key in data[index]){
             for(columnkey in columns){
                 if(columns[columnkey]['field']==key){
-                    formatedarray[columns[columnkey]['name'].replace(/[^a-zA-Z]/g, "")] = data[index][key];
+                  //  formatedarray[columns[columnkey]['name'].replace(/[^a-zA-Z]/g, "")] = data[index][key];
                 }
 
               }
@@ -83,20 +83,22 @@ makeexecl(selectedData);
 
 }
 function openmap() {
-
   selectedIndexes = grid.getSelectedRows();
   var selectedData =[];
   var count = 0;
   var options = {};
-
-  for(index in selectedIndexes){
-        options['docid']   =  data[index]['id'];
-        console.log(data[index]);
-        console.log(options['docid']);
+  if(selectedIndexes.length==1){
+        options['docid'] =  data[0]['DocumentID']
         openGoogleMap(options);
-
-   }
+  }else{
+      options['docid']          = {};
+      for(index in selectedIndexes){
+          options['docid'][index]   =  data[index]['DocumentID'];
+      }
+      openGoogleMap(options);
+    }
 }
+
 function makeexecl(selRowData){
   var obj = new X2JS();
   var data = obj.json2xml_str({ WorkBook : { Rows : selRowData } });
@@ -248,6 +250,7 @@ function arrageData(unfromated){
                     alert('new format found!!! check console');
                     return false;
                  }
+
              });
              i++;
           

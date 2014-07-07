@@ -15,7 +15,7 @@ function openGoogleMap(options) {
 	
 	//alert(args);
 	var dbPath=(typeof options.dbpath==='undefined' || options.dbpath==='') ? '' : '/'+options.dbpath+'/';
-	var w=window.open(dbPath+'GoogleMaps.htm?openpage'+args, '', strFeatures);
+	var w=window.open('http://test.psksyd.com/Kund/Bridge/Main.nsf/'+'GoogleMaps.htm?openpage'+args, '', strFeatures);
 	w.focus();
 }
 

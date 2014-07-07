@@ -5,7 +5,7 @@ $.ajax({
       type: "GET",
    //   url: siteURL + "?readviewentries&outputformat=json",
     data : { start : startfrom[0], count : startfrom[1]},
-      url: 'latestviewentries.json',
+      url: 'fulljson.json',
        dataType:'json',
        success:function(newdata){
                 postMessage(newdata);

@@ -61,42 +61,78 @@ for (var columnId in columnFilters) {
 
 function printexcel() {
 
+
   selectedIndexes = grid.getSelectedRows();
   var selectedData =[];
   var count = 0;
-
-
+  if(selectedIndexes.lenght>0){
   for(index in selectedIndexes){
       formatedarray = {};
-      for(key in data[index]){
-            for(columnkey in columns){
+      for(key in dataView.getItem(index)){
+        for(columnkey in columns){
                 if(columns[columnkey]['field']==key){
-                  //  formatedarray[columns[columnkey]['name'].replace(/[^a-zA-Z]/g, "")] = data[index][key];
+                    formatedarray[columns[columnkey]['name'].replace(/[^a-zA-Z]/g, "")] = data[index][key];
                 }
-
               }
       }
      selectedData[count]  = formatedarray;
       count++;
   }
-makeexecl(selectedData);
-
-}
-function openmap() {
-  selectedIndexes = grid.getSelectedRows();
-  var selectedData =[];
-  var count = 0;
-  var options = {};
-  if(selectedIndexes.length==1){
-        options['docid'] =  data[0]['DocumentID']
-        openGoogleMap(options);
-  }else{
-      options['docid']          = {};
-      for(index in selectedIndexes){
-          options['docid'][index]   =  data[index]['DocumentID'];
+}else{
+  for(var allrowcount=0;allrowcount<dataView.getLength();allrowcount++){
+      formatedarray = {};
+      for(key in dataView.getItem(allrowcount)){
+          for(columnkey in columns){
+                if(columns[columnkey]['field']==key){
+                    formatedarray[columns[columnkey]['name'].replace(/[^a-zA-Z]/g, "")] = data[allrowcount][key];
+                }
+           }
       }
-      openGoogleMap(options);
+     selectedData[count]  = formatedarray;
+      count++;
+  }
+}
+  makeexecl(selectedData);
+}
+
+function openmap() {
+  
+  selectedIndexes = grid.getSelectedRows();
+
+  if(selectedIndexes.lenght>0){
+
+  if(selectedIndexes.length==1){
+      maparray          = {};
+      maparray['docid'] =  dataView.getItem(0)['unid'];
+      console.log(maparray);
+      openGoogleMap(maparray);
+    }else{
+        maparray        = {};
+        maparray['docids']          = [];
+        for(index in selectedIndexes){
+          maparray['docids'][index] = dataView.getItem(index)['unid'];
+        }
+        openGoogleMap(maparray);
     }
+ }else{
+    if(dataView.getLength()==1){
+        maparray          = {};
+        maparray['docid'] =  dataView.getItem(0)['unid'];
+        openGoogleMap(maparray);
+    }else{
+        maparray        = {};
+        maparray['docids']          = [];
+        for(var allrowcount=0;allrowcount<dataView.getLength();allrowcount++){
+          maparray['docids'][allrowcount] = dataView.getItem(allrowcount)['unid'];
+        }
+        console.log(maparray);
+        openGoogleMap(maparray);
+
+    }
+
+
+ }
+
 }
 
 function makeexecl(selRowData){
@@ -200,7 +236,7 @@ if(typeof(Worker) !== "undefined") {
       type: "GET",
     //  url: siteURL + "?readviewentries&outputformat=json",
     data : { start : startfrom, count : count },
-      url: 'latestviewentries.json',
+      url: 'fulljson.json',
        dataType:'json',
        success:function(newdata){
               if(queued[loopcount]){
@@ -219,7 +255,7 @@ function getgriddata(){
   return $.ajax({
     type: "GET",
    // url: siteURL + "?readviewentries&outputformat=json&count=3000",
-    url: 'latestviewentries.json',
+    url: 'fulljson.json',
      dataType:'json'
   });
 }
@@ -229,6 +265,9 @@ function arrageData(unfromated){
    $.each(unfromated,function(index,rows){
            data[i] = {};
            row++;
+           data[i]['unid']    = rows['@unid'];
+
+           
            $.each(rows['entrydata'],function(index,cindcolum){
                 
                 if("text" in cindcolum){
@@ -251,8 +290,10 @@ function arrageData(unfromated){
                     return false;
                  }
 
+
              });
-             i++;
+            i++;
+          
           
            });
  
@@ -294,10 +335,9 @@ $(function () {
     grid = new Slick.Grid("#myGrid", dataView, columns, options);
     grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
     grid.registerPlugin(checkboxSelector);
-     var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
-
-
-     grid.onSort.subscribe(function (e, args) {
+     var pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
+    
+    grid.onSort.subscribe(function (e, args) {
     sortdir = args.sortAsc ? 1 : -1;
     sortcol = args.sortCol.field;
 
@@ -352,7 +392,17 @@ $(function () {
   });
 
 
- 
+    dataView.onPagingInfoChanged.subscribe(function (e, pagingInfo) {
+    var isLastPage = pagingInfo.pageNum == pagingInfo.totalPages - 1;
+    var enableAddRow = isLastPage || pagingInfo.pageSize == 0;
+    var options = grid.getOptions();
+
+    if (options.enableAddRow != enableAddRow) {
+      grid.setOptions({enableAddRow: enableAddRow});
+    }
+  });
+
+
     $(grid.getHeaderRow()).delegate(":input", "change keyup", function (e) {
       var columnId = $(this).data("columnId");
       if (columnId != null) {
@@ -377,6 +427,7 @@ $(function () {
       });
   
     //===========get other set of data's===================
+    totalrequest = 3;
      for(k=1;k<totalrequest;k++){ 
        if(k==1)
        var apirequest = getNewrows((k * percount) + 1, percount);

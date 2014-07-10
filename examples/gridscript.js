@@ -37,6 +37,98 @@ function comparer(a, b) {
   var x = a[sortcol], y = b[sortcol];
   return (x == y ? 0 : (x > y ? 1 : -1));
 }
+//=============================================
+
+require.config({
+                text: 'text.js',
+                paths: {
+                    JSZip: '//cdnjs.cloudflare.com/ajax/libs/jszip/2.0.0/jszip'
+                },
+                shim: {
+                    'JSZip': {
+                        exports: 'JSZip'
+                    }
+                }
+            });
+
+function createdata(){
+ require(['excel-builder', 'text!testdata.json','gridfeeder', 'BasicReport'], function (builder, testdata,gridfeeder,BasicReport) {
+                var data = JSON.parse(testdata);
+         
+                var basicReport = new BasicReport();
+                var gridcolumns = gridfeeder.getColumns();
+                var  columns    = [];
+                var worksheetData = [];
+                var tmpworksheetData = [];
+                for(index in gridcolumns){
+                   if(gridcolumns[index]['id']!=="_checkbox_selector"){
+                      columns.push({id: gridcolumns[index]['id'], name: gridcolumns[index]['name'], type: 'number', width: 20});
+                      tmpworksheetData.push({value: gridcolumns[index]['name'], metadata: {style: basicReport.predefinedFormatters.header.id, type: 'string'}});
+                   }
+                }
+                var exceldata = gridfeeder.getExceldata();
+                worksheetData.push(tmpworksheetData);
+               
+                for(index in exceldata){
+                   worksheetData.push(exceldata[index]);
+                }
+
+                basicReport.setHeader([
+                    {bold: true, text: "Generic Report"}, "", ""
+                ]);
+
+                basicReport.setData(worksheetData);
+                basicReport.setColumns(columns);
+                basicReport.setFooter([
+                    '', '', 'Page &P of &N'
+                ]);
+               
+                    Downloadify.create('growlUI',{
+                            filename: function(){
+                                    return "sample.xlsx";
+                            },
+                            data: function(){ 
+                                    return builder.createFile(basicReport.prepare());
+                            },
+//                            onComplete: function(){ alert('Your File Has Been Saved!'); },
+//                            onCancel: function(){ alert('You have cancelled the saving of this file.'); },
+//                            onError: function(){ alert('You must put something in the File Contents or there will be nothing to save!'); },
+                            swf: 'downloadify.swf',
+                            downloadImage: 'download.png',
+                            width: 100,
+                            dataType: 'base64',
+                            height: 30,
+                            transparent: true,
+                            append: false
+                    });
+                      
+                      $.blockUI({ 
+                        message: $('#growlUI'), 
+                        fadeIn: 700, 
+                        showOverlay: false, 
+                        centerY: false, 
+                        css: { 
+                            width: '350px', 
+                            top: '10px', 
+                            left: '', 
+                            right: '10px', 
+                            border: 'none', 
+                            padding: '5px', 
+                            backgroundColor: '#000', 
+                            '-webkit-border-radius': '10px', 
+                            '-moz-border-radius': '10px', 
+                            opacity: .6, 
+                            color: '#fff' 
+                        } 
+                    });
+
+
+                });
+    
+
+}
+//===============================================
+
 
 function getcolumn(){
   return $.ajax({
@@ -60,12 +152,10 @@ for (var columnId in columnFilters) {
   }
 
 function printexcel() {
-
-
   selectedIndexes = grid.getSelectedRows();
   var selectedData =[];
   var count = 0;
-  if(selectedIndexes.lenght>0){
+  if(selectedIndexes.length>0){
   for(index in selectedIndexes){
       formatedarray = {};
       for(key in dataView.getItem(index)){
@@ -99,7 +189,7 @@ function openmap() {
   
   selectedIndexes = grid.getSelectedRows();
 
-  if(selectedIndexes.lenght>0){
+  if(selectedIndexes.length>0){
 
   if(selectedIndexes.length==1){
       maparray          = {};

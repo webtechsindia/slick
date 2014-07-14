@@ -24,6 +24,7 @@ var percentCompleteThreshold = 0;
 var searchString = "";
 var queued  = [];
 var loopcount = 0;
+var dataType = {};
 if( window.Worker)
 var primeWorker = new Worker('worker.js');
 
@@ -51,8 +52,7 @@ require.config({
                 }
             });
 
-function createdata(){
- require(['excel-builder', 'text!testdata.json','gridfeeder', 'BasicReport'], function (builder, testdata,gridfeeder,BasicReport) {
+function createdata(){require(['excel-builder', 'text!testdata.json','gridfeeder', 'BasicReport'], function (builder, testdata,gridfeeder,BasicReport) {
                 var data = JSON.parse(testdata);
          
                 var basicReport = new BasicReport();
@@ -82,10 +82,25 @@ function createdata(){
                 basicReport.setFooter([
                     '', '', 'Page &P of &N'
                 ]);
+
+
+
+               if('download' in document.getElementById('downloaderlink')){
+                    $("#downloaderlink").attr({
+                        href: "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"+builder.createFile(basicReport.prepare())
+                    });
+                } else {
                
                     Downloadify.create('growlUI',{
                             filename: function(){
-                                    return "sample.xlsx";
+                               var currentdate = new Date(); 
+                                var datetime = "Last Sync: " + currentdate.getDate() + "_"
+                                                + (currentdate.getMonth()+1)  + "_" 
+                                                + currentdate.getFullYear() + "_"  
+                                                + currentdate.getHours() + "_"  
+                                                + currentdate.getMinutes() + "_" 
+                                                + currentdate.getSeconds();
+                                    return "sample_"+datetime+".xlsx";
                             },
                             data: function(){ 
                                     return builder.createFile(basicReport.prepare());
@@ -101,6 +116,8 @@ function createdata(){
                             transparent: true,
                             append: false
                     });
+
+                  }
                       
                       $.blockUI({ 
                         message: $('#growlUI'), 
@@ -225,32 +242,6 @@ function openmap() {
 
 }
 
-function makeexecl(selRowData){
-  var obj = new X2JS();
-  var data = obj.json2xml_str({ WorkBook : { Rows : selRowData } });
-  data = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>' + data;
-  if (saveAs) {
-    saveAs(
-            new Blob(
-                [data]
-              , {type: "application/ms-excel;charset=" + document.characterSet}
-          )
-          , "document.xls"
-      );
-  }
-  else{
-    
-    var form = "<html><head /><body>";
-    form = form + "<form name='exportForm' action='" + siteURL + "/ExportJQGrid?OpenAgent' method='POST'>";
-      form = form + "<input type='hidden' name='dataXml' value='" + data + "'>";
-      form = form + "</form><script>document.exportForm.submit();</script>";
-      form = form + "</body></html>";
-      OpenWindow = window.open('', '');
-      OpenWindow.document.write(form);
-      OpenWindow.document.close();
-  }
-  $('.loading').hide();
-}
 
 function ordercolumns(unsortedcolumn){
   var items = [];
@@ -351,36 +342,51 @@ function getgriddata(){
 }
 
 
+
 function arrageData(unfromated){
    $.each(unfromated,function(index,rows){
            data[i] = {};
            row++;
            data[i]['unid']    = rows['@unid'];
 
-           
+                       
            $.each(rows['entrydata'],function(index,cindcolum){
                 
                 if("text" in cindcolum){
                     data[i]['id']               =  cindcolum['@columnnumber']+row+" "+i;
                     data[i][cindcolum['@name']] =  cindcolum['text']['0'];
+                    keystatus = cindcolum['@name'] in dataType;
+                    if(!keystatus){
+                      dataType[cindcolum['@name']] ='text';
+                    }
                   }
                  else if("textlist" in cindcolum){
                     data[i]['id']               =  cindcolum['@columnnumber']+row+" "+i;
                     data[i][cindcolum['@name']] =  cindcolum['textlist']['text'][0];
+                    keystatus = cindcolum['@name'] in dataType;
+                    if(!keystatus){
+                      dataType[cindcolum['@name']] ='textlist';
+                    }
                   }else if("number" in cindcolum){
                     data[i]['id']               =  cindcolum['@columnnumber']+row+" "+i;
                     data[i][cindcolum['@name']] =  cindcolum['number'][0];
+                    keystatus = cindcolum['@name'] in dataType;
+                    if(!keystatus){
+                      dataType[cindcolum['@name']] ='number';
+                    }
                   }else if("datetime" in cindcolum){
                     data[i]['id']               =  cindcolum['@columnnumber']+row+" "+i;
                     var readableDate            =  formatDate(cindcolum['datetime'][0]);
                     data[i][cindcolum['@name']] =  readableDate;
+                    keystatus = cindcolum['@name'] in dataType;
+                    if(!keystatus){
+                      dataType[cindcolum['@name']] ='datetime';
+                    }
                   }
               else{
                     alert('new format found!!! check console');
                     return false;
                  }
-
-
              });
             i++;
           

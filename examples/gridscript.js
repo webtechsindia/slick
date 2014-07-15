@@ -40,6 +40,14 @@ function comparer(a, b) {
 }
 //=============================================
 
+function JSDateToExcelDate(inDate) {
+
+var returnDateTime = 25569.0 + ((inDate.getTime() - (inDate.getTimezoneOffset() * 60 * 1000)) / (1000 * 60 * 60 * 24));
+return returnDateTime.toString().substr(0,20);
+
+}
+
+
 require.config({
                 text: 'text.js',
                 paths: {
@@ -52,92 +60,44 @@ require.config({
                 }
             });
 
-function createdata(){require(['excel-builder', 'text!testdata.json','gridfeeder', 'BasicReport'], function (builder, testdata,gridfeeder,BasicReport) {
-                var data = JSON.parse(testdata);
-         
-                var basicReport = new BasicReport();
-                var gridcolumns = gridfeeder.getColumns();
-                var  columns    = [];
-                var worksheetData = [];
-                var tmpworksheetData = [];
-                for(index in gridcolumns){
-                   if(gridcolumns[index]['id']!=="_checkbox_selector"){
-                      columns.push({id: gridcolumns[index]['id'], name: gridcolumns[index]['name'], type: 'number', width: 20});
-                      tmpworksheetData.push({value: gridcolumns[index]['name'], metadata: {style: basicReport.predefinedFormatters.header.id, type: 'string'}});
-                   }
-                }
-                var exceldata = gridfeeder.getExceldata();
-                worksheetData.push(tmpworksheetData);
-               
-                for(index in exceldata){
-                   worksheetData.push(exceldata[index]);
-                }
+function createdata(){
 
-                basicReport.setHeader([
-                    {bold: true, text: "Generic Report"}, "", ""
-                ]);
+  require(['excel-builder', 'text!testdata.json','gridfeeder', 'BasicReport','download'], function (EB, testdata,gridfeeder,BasicReport,downloader) {
+     var basicReport = new BasicReport();
+  
+        var currency = basicReport.getStyleSheet().createFormat({
+          format: '$#,##0.00'
+        });
+        
+       var gridcolumns      = gridfeeder.getColumns();
+       var  columns         = [];
+       var worksheetData    = [];
+       var tmpworksheetData = [];
+       for(index in gridcolumns){
+          if(gridcolumns[index]['id']!=="_checkbox_selector"){
+             columns.push({id: gridcolumns[index]['id'], name: gridcolumns[index]['name'], type: 'number', width: 20});
+             console.log(gridcolumns[index]['name']=="Date Test");
+             tmpworksheetData.push({value: gridcolumns[index]['name'], metadata: {style: basicReport.predefinedFormatters.header.id, type: 'string'}});
+          }
+       }
+       var exceldata = gridfeeder.getExceldata();
+       worksheetData.push(tmpworksheetData);
+       for(index in exceldata){
+             worksheetData.push(exceldata[index]);
+       }
 
-                basicReport.setData(worksheetData);
-                basicReport.setColumns(columns);
-                basicReport.setFooter([
-                    '', '', 'Page &P of &N'
-                ]);
+        basicReport.setHeader([
+            {bold: true, text: "Generic Report"}, "", ""
+        ]);
 
+        basicReport.setData(worksheetData);
+        basicReport.setColumns(columns);
+        basicReport.setFooter([
+            '', '', 'Page &P of &N'
+        ]);
+       var excel =  EB.createFile(basicReport.prepare());
+       downloader('create.xlxs', excel)
 
-
-               if('download' in document.getElementById('downloaderlink')){
-                    $("#downloaderlink").attr({
-                        href: "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"+builder.createFile(basicReport.prepare())
-                    });
-                } else {
-               
-                    Downloadify.create('growlUI',{
-                            filename: function(){
-                               var currentdate = new Date(); 
-                                var datetime = "Last Sync: " + currentdate.getDate() + "_"
-                                                + (currentdate.getMonth()+1)  + "_" 
-                                                + currentdate.getFullYear() + "_"  
-                                                + currentdate.getHours() + "_"  
-                                                + currentdate.getMinutes() + "_" 
-                                                + currentdate.getSeconds();
-                                    return "sample_"+datetime+".xlsx";
-                            },
-                            data: function(){ 
-                                    return builder.createFile(basicReport.prepare());
-                            },
-//                            onComplete: function(){ alert('Your File Has Been Saved!'); },
-//                            onCancel: function(){ alert('You have cancelled the saving of this file.'); },
-//                            onError: function(){ alert('You must put something in the File Contents or there will be nothing to save!'); },
-                            swf: 'downloadify.swf',
-                            downloadImage: 'download.png',
-                            width: 100,
-                            dataType: 'base64',
-                            height: 30,
-                            transparent: true,
-                            append: false
-                    });
-
-                  }
-                      
-                      $.blockUI({ 
-                        message: $('#growlUI'), 
-                        fadeIn: 700, 
-                        showOverlay: false, 
-                        centerY: false, 
-                        css: { 
-                            width: '350px', 
-                            top: '10px', 
-                            left: '', 
-                            right: '10px', 
-                            border: 'none', 
-                            padding: '5px', 
-                            backgroundColor: '#000', 
-                            '-webkit-border-radius': '10px', 
-                            '-moz-border-radius': '10px', 
-                            opacity: .6, 
-                            color: '#fff' 
-                        } 
-                    });
 
 
                 });

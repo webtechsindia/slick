@@ -60,49 +60,108 @@ require.config({
                 }
             });
 
+function detectdata(key,data){
+  console.log(key);
+  // console.log(data);
+
+
+  switch(key) {
+    case '$51':
+          return {value: JSDateToExcelDate(new Date(data)), metadata: {style: dateformat.id}}
+        break;
+    case '$28':
+          var out = data.match(/^\[(.*)\]/i);
+          if(out!=null){
+             return $(out['1']).html();
+          } 
+    break;
+    case '$52':
+          return "" ;
+    break;
+   
+    default:
+    return data;
+       // default code block
+  }
+
+
+}
+
+function getExceldata() {
+          selectedIndexes = grid.getSelectedRows();
+          var selectedData =[];
+          var count = 0;
+          if(selectedIndexes.length>0){
+            return [selectedIndexes,'checked'];
+
+          for(index in selectedIndexes){
+              formatedarray = [];
+              for(key in dataView.getItem(index)){
+                for(columnkey in columns){
+                        if(columns[columnkey]['field']==key){
+                            formatedarray.push(data[index][key]);
+                        }
+                      }
+              }
+             selectedData[count]  = formatedarray;
+              count++;
+          }
+        }else{
+          for(var allrowcount=0;allrowcount<dataView.getLength();allrowcount++){
+              formatedarray = [];
+              
+              for(key in dataView.getItem(allrowcount)){
+                  if(key!=='unid' && key!=='id'){
+                    alert("asd");
+                   var formateddata = detectdata(key,data[allrowcount][key]);    
+                     
+                     formatedarray.push(formateddata);
+                  }
+                   }
+             selectedData.push(formatedarray);
+          }
+        }
+      return selectedData;
+      }
 function createdata(){
 
   require(['excel-builder', 'text!testdata.json','gridfeeder', 'BasicReport','download'], function (EB, testdata,gridfeeder,BasicReport,downloader) {
-     var basicReport = new BasicReport();
-  
-        var currency = basicReport.getStyleSheet().createFormat({
-          format: '$#,##0.00'
-        });
-        
-       var gridcolumns      = gridfeeder.getColumns();
-       var  columns         = [];
-       var worksheetData    = [];
-       var tmpworksheetData = [];
-       for(index in gridcolumns){
+      var basicReport = new BasicReport();
+      var artistWorkbook = EB.createWorkbook();
+      var albumList = artistWorkbook.createWorksheet({name: 'Album List'});
+      var  columns         = [];
+       dateformat = artistWorkbook.getStyleSheet().createFormat({
+          format: 'mm/dd/yy'
+      });
+
+
+      var gridcolumns      = gridfeeder.getColumns();
+       var tmporiginalData = [];
+       columnnames = [];
+      for(index in gridcolumns){
           if(gridcolumns[index]['id']!=="_checkbox_selector"){
-             columns.push({id: gridcolumns[index]['id'], name: gridcolumns[index]['name'], type: 'number', width: 20});
-             console.log(gridcolumns[index]['name']=="Date Test");
-             tmpworksheetData.push({value: gridcolumns[index]['name'], metadata: {style: basicReport.predefinedFormatters.header.id, type: 'string'}});
+             columnnames.push(gridcolumns[index]['name']);
           }
        }
-       var exceldata = gridfeeder.getExceldata();
-       worksheetData.push(tmpworksheetData);
-       for(index in exceldata){
-             worksheetData.push(exceldata[index]);
-       }
+     
+      tmporiginalData.push(columnnames); 
+      var exceldata = getExceldata();
+     
 
-        basicReport.setHeader([
-            {bold: true, text: "Generic Report"}, "", ""
-        ]);
-
-        basicReport.setData(worksheetData);
-        basicReport.setColumns(columns);
-        basicReport.setFooter([
-            '', '', 'Page &P of &N'
-        ]);
-       var excel =  EB.createFile(basicReport.prepare());
-       downloader('create.xlxs', excel)
-
-
-
-                });
-    
-
+        
+      for(index in  exceldata ){
+        tmporiginalData.push(exceldata[index]);
+        
+      }
+      
+      var originalData = [];
+     // originalData.push(tmporiginalData);
+      albumList.setData(tmporiginalData);
+      artistWorkbook.addWorksheet(albumList);
+ 
+      var data = EB.createFile(artistWorkbook);
+      downloader('Artist WB.xlsx', data);
+    });
 }
 //===============================================
 
@@ -171,8 +230,7 @@ function openmap() {
   if(selectedIndexes.length==1){
       maparray          = {};
       maparray['docid'] =  dataView.getItem(0)['unid'];
-      console.log(maparray);
-      openGoogleMap(maparray);
+    openGoogleMap(maparray);
     }else{
         maparray        = {};
         maparray['docids']          = [];
@@ -192,7 +250,7 @@ function openmap() {
         for(var allrowcount=0;allrowcount<dataView.getLength();allrowcount++){
           maparray['docids'][allrowcount] = dataView.getItem(allrowcount)['unid'];
         }
-        console.log(maparray);
+        
         openGoogleMap(maparray);
 
     }
@@ -308,10 +366,7 @@ function arrageData(unfromated){
            data[i] = {};
            row++;
            data[i]['unid']    = rows['@unid'];
-
-                       
            $.each(rows['entrydata'],function(index,cindcolum){
-                
                 if("text" in cindcolum){
                     data[i]['id']               =  cindcolum['@columnnumber']+row+" "+i;
                     data[i][cindcolum['@name']] =  cindcolum['text']['0'];

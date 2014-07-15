@@ -2,7 +2,7 @@ define(function () {
     return function (fileName, content) {
         var form = $("<form>").attr({
             target: '_BLANK',
-            action: '/slick/examples/test.php',
+            action: '/examples/test.php',
             method: 'post'
         }).css({display: 'none'});
         form.append($("<input>").attr({name: 'fileName', value: fileName}));

@@ -67,17 +67,23 @@ function detectdata(key,data){
 
   switch(key) {
     case '$51':
-          return {value: JSDateToExcelDate(new Date(data)), metadata: {style: dateformat.id}}
+          
+          if(Date.parse(data)){
+            var date = Number(JSDateToExcelDate(new Date(data)));
+            return {value:date, metadata: {style: dateformat.id}}
+          }else{
+            return ""
+          }
         break;
     case '$28':
           var out = data.match(/^\[(.*)\]/i);
           if(out!=null){
              return $(out['1']).html();
           } 
-    break;
-    case '$52':
-          return "" ;
-    break;
+    // break;
+    // case '$52':
+    //       return "" ;
+    // break;
    
     default:
     return data;
@@ -112,7 +118,6 @@ function getExceldata() {
               
               for(key in dataView.getItem(allrowcount)){
                   if(key!=='unid' && key!=='id'){
-                    alert("asd");
                    var formateddata = detectdata(key,data[allrowcount][key]);    
                      
                      formatedarray.push(formateddata);
@@ -131,7 +136,7 @@ function createdata(){
       var albumList = artistWorkbook.createWorksheet({name: 'Album List'});
       var  columns         = [];
        dateformat = artistWorkbook.getStyleSheet().createFormat({
-          format: 'mm/dd/yy'
+          format: 'mm-dd-yy hh:mm:ss AM/PM'
       });
 
 

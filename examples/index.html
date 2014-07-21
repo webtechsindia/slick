@@ -1,61 +1,68 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>SlickGrid Examples</title>
-  <style>
-    body {
-      font-family: Helvetica, arial, freesans, clean, sans-serif;
-      font-size: 15px;
-    }
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>SlickGrid example 4: Model</title>
+  <link rel="stylesheet" href="./slicklib/css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
+  <link rel="stylesheet" href="./slicklib/slick.grid.css" type="text/css"/>
+  <link rel="stylesheet" href="./slicklib/examples.css" type="text/css"/>
+  <link rel="stylesheet" href="./slicklib/controls/slick.pager.css" type="text/css"/>
 
-    a {
-      color: #4183c4;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    li {
-      margin-bottom: 15px;
-    }
-  </style>
 </head>
 <body>
-  <h1>Examples</h1>
-  <div>
-    <ul>
-      <li><a href="example1-simple.html">Basic use with minimal configuration</a></li>
-      <li><a href="example2-formatters.html">Adding some formatting</a></li>
-      <li><a href="example7-events.html">Handling events</a></li>
-      <li><a href="example14-highlighting.html">Highlighting and flashing cells</a></li>
-      <li><a href="example3-editing.html">Making it editable</a></li>
-      <li><a href="example3a-compound-editors.html">Writing compound editors</a></li>
-      <li><a href="example3b-editing-with-undo.html">Implementing Undo</a></li>
-      <li><a href="example-composite-editor-item-details.html">Using a CompositeEditor to implement detached item edit form</a></li>
-      <li>(most comprehensive) <a href="example4-model.html">Using a filtered data view to drive the grid</a></li>
-      <li><a href="example5-collapsing.html">Adding tree functionality (expand/collapse) to the grid</a></li>
-      <li><a href="example6-ajax-loading.html"><span class="caps">AJAX</span>-loading data with search</a></li>
-      <li><a href="example8-alternative-display.html">Using pre-compiled micro-templates to render cells</a></li>
-      <li><a href="example9-row-reordering.html">Row selection &amp; reordering</a></li>
-      <li><a href="example10-async-post-render.html">Using background post-rendering to add graphs</a></li>
-      <li><a href="example11-autoheight.html" title="autoHeight">No vertical scrolling</a></li>
-      <li><a href="example12-fillbrowser.html">Filling the whole window</a></li>
-      <li><a href="example13-getItem-sorting.html">Sorting by an index, getItem method</a></li>
-      <li><a href="example-header-row.html">Using fixed header row for quick filters</a></li>
-      <li><a href="example-checkbox-row-select.html">Plugin:  Checkbox row selectors with CheckboxSelectColumn plugin</a></li>
-      <li><a href="example-spreadsheet.html">Spreadsheet: cell range selection, copy’n’paste and Excel-style formula editor</a></li>
-      <li><a href="example-grouping.html">Interactive grouping and aggregates</a>.</li>
-      <li><a href="example-colspan.html">Colspan</a></li>
-      <li><a href="example-optimizing-dataview.html">Optimizing DataView for 500’000 rows</a></li>
-      <li><a href="example-explicit-initialization.html">Explicit initialization</a></li>
-      <li><a href="example-multi-column-sort.html">Multi-column sorting</a></li>
-      <li><a href="example-custom-column-value-extractor.html">Using dataItemColumnValueExtractor option to specify a custom column value extractor</a></li>
-      <li><a href="example-plugin-headerbuttons.html">Plugin: Column header buttons</a></li>
-      <li><a href="example-plugin-headermenu.html">Plugin: Column header menu</a></li>
-      <li><a href="example-autotooltips.html">Plugin: Auto tooltips</a></li>
-    </ul>
+   
+   
+
+  <div style="width:100%;">
+      <label>SlickGrid</label>
+      <a href="#" id="downloader" onclick="createdata();"><span style="float:right" class="ui-icon ui-icon-print" title="Toggle search panel"
+           > </span></a>
+             <span style="float:right" class="ui-icon icon-map-marker" title="Toggle search panel"
+            onclick="openmap()"></span>
+    <div id="myGrid" style="width:100%;height:500px;"></div>
+    <div id="pager" style="width:100%;height:20px;"></div>
   </div>
+  <div id="growlUI">
+    <a id="downloaderlink" href="#"  download="sample.xlsx">Download</a>
+   
+  </div>
+
+<script src="./slicklib/lib/firebugx.js"></script>
+
+<script src="./slicklib/lib/jquery-1.7.min.js"></script>
+<script src="./slicklib/lib/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="./slicklib/lib/jquery.event.drag-2.2.js"></script>
+<script src="./slicklib/lib/jquery.event.drop-2.2.js"></script>
+<script src="./slicklib/slick.core.js"></script>
+<script src="./slicklib/plugins/slick.checkboxselectcolumn.js"></script>
+<script src="./slicklib/plugins/slick.autotooltips.js"></script>
+<script src="./slicklib/plugins/slick.cellrangedecorator.js"></script>
+<script src="./slicklib/plugins/slick.cellrangeselector.js"></script>
+<script src="./slicklib/plugins/slick.cellcopymanager.js"></script>
+<script src="./slicklib/plugins/slick.cellselectionmodel.js"></script>
+<script src="./slicklib/plugins/slick.rowselectionmodel.js"></script>
+<script src="./slicklib/controls/slick.columnpicker.js"></script>
+<script src="./slicklib/controls/slick.pager.js"></script>
+<script src="./slicklib/slick.formatters.js"></script>
+<script src="./slicklib/slick.editors.js"></script>
+<script src="./slicklib/opener.js"></script>
+<script src="./slicklib/slick.cellrangeselector.js"></script>
+<script src="./slicklib/slick.dataview.js"></script>
+<script src="./slicklib/slick.grid.js"></script>
+<script src="./slicklib/xml2json.js"></script>
+<script src="./slicklib/canvas-toBlob.js"></script>
+<script src="./slicklib/FileSaver.js"></script>
+
+
+<script type="text/javascript" src="http://malsup.github.io/min/jquery.blockUI.min.js"></script>
+
+<!-- ====================== -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+
+<!-- ====================== -->
+<script src="./slicklib/gridscript.js"></script>
+<script>
+</script>
 </body>
 </html>
